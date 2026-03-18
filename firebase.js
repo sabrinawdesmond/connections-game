@@ -6,12 +6,12 @@ import { getFirestore } from "firebase/firestore";
 // Get it from: Firebase Console → Project Settings → Your apps
 // ─────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "REDACTED",
+  authDomain: "connections-game-d127a.firebaseapp.com",
+  projectId: "connections-game-d127a",
+  storageBucket: "connections-game-d127a.firebasestorage.app",
+  messagingSenderId: "426763374385",
+  appId: "1:426763374385:web:3e6f88cd87c241240caa10",
 };
 
 const app = initializeApp(firebaseConfig);
