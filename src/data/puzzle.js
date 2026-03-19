@@ -10,17 +10,17 @@ export const PUZZLE_TITLE = "Gaby's Connections";
 export const GROUPS = [
   {
     id: 1,
-    label: "Category One",
+    label: "How Gaby likes her martini",
     color: "#F9DF6D",
     difficulty: "Straightforward",
-    words: ["WORD1", "WORD2", "WORD3", "WORD4"],
+    words: ["DIRTY", "FILTHY", "BRINY", "STRONG"],
   },
   {
     id: 2,
-    label: "Category Two",
+    label: "Words to describe Maynard",
     color: "#A0C35A",
     difficulty: "Medium",
-    words: ["WORD5", "WORD6", "WORD7", "WORD8"],
+    words: ["KOREAN", "BULGOGI", "GOOFY", "DOG"],
   },
   {
     id: 3,
