@@ -8,10 +8,12 @@ import {
   ScrollView,
   SafeAreaView,
 } from "react-native";
+import * as Haptics from "expo-haptics";
 import { GROUPS, WORD_MAP, getShuffledWords, PUZZLE_TITLE } from "../data/puzzle";
 import Tile from "../components/Tile";
 import SolvedGroup from "../components/SolvedGroup";
 import MistakeTracker from "../components/MistakeTracker";
+import ConfettiOverlay from "../components/ConfettiOverlay";
 
 const MAX_MISTAKES = 4;
 
@@ -24,13 +26,24 @@ export default function GameScreen({ navigation, route }) {
   const [mistakes, setMistakes] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState("");
+  const [flippingGroup, setFlippingGroup] = useState(null);
+  const [showWinConfetti, setShowWinConfetti] = useState(false);
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
+  const messageOpacity = useRef(new Animated.Value(0)).current;
   const startTime = useRef(Date.now());
+  const messageAnimation = useRef(null);
 
   function flashMessage(msg, duration = 2000) {
+    if (messageAnimation.current) messageAnimation.current.stop();
     setMessage(msg);
-    setTimeout(() => setMessage(""), duration);
+    messageOpacity.setValue(0);
+    messageAnimation.current = Animated.sequence([
+      Animated.timing(messageOpacity, { toValue: 1, duration: 180, useNativeDriver: true }),
+      Animated.delay(duration - 380),
+      Animated.timing(messageOpacity, { toValue: 0, duration: 200, useNativeDriver: true }),
+    ]);
+    messageAnimation.current.start(() => setMessage(""));
   }
 
   function shake() {
@@ -69,27 +82,37 @@ export default function GameScreen({ navigation, route }) {
     const allSame = groupIds.every((id) => id === groupIds[0]);
 
     if (allSame) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       const solvedGroup = GROUPS.find((g) => g.id === groupIds[0]);
-      const newSolvedGroups = [...solvedGroups, solvedGroup];
-      setSolvedGroups(newSolvedGroups);
-      setWords((prev) => prev.filter((w) => !selected.includes(w)));
-      setSelected([]);
+      setFlippingGroup({ words: [...selected], color: solvedGroup.color });
 
-      if (newSolvedGroups.length === GROUPS.length) {
-        const elapsed = Math.floor((Date.now() - startTime.current) / 1000);
-        setGameOver("won");
-        navigation.navigate("Result", {
-          playerName,
-          mistakes,
-          elapsed,
-          won: true,
-        });
-      }
+      setTimeout(() => {
+        const newSolvedGroups = [...solvedGroups, solvedGroup];
+        setSolvedGroups(newSolvedGroups);
+        setWords((prev) => prev.filter((w) => !selected.includes(w)));
+        setSelected([]);
+        setFlippingGroup(null);
+
+        if (newSolvedGroups.length === GROUPS.length) {
+          const elapsed = Math.floor((Date.now() - startTime.current) / 1000);
+          setGameOver("won");
+          setShowWinConfetti(true);
+          setTimeout(() => {
+            navigation.navigate("Result", {
+              playerName,
+              mistakes,
+              elapsed,
+              won: true,
+            });
+          }, 400);
+        }
+      }, 700);
     } else {
       const counts = {};
       groupIds.forEach((id) => { counts[id] = (counts[id] || 0) + 1; });
       const isOneAway = Object.values(counts).some((v) => v === 3);
 
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       shake();
       const newMistakes = mistakes + 1;
       setMistakes(newMistakes);
@@ -122,6 +145,7 @@ export default function GameScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.safe}>
+      {showWinConfetti && <ConfettiOverlay won={true} />}
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>{PUZZLE_TITLE}</Text>
         <Text style={styles.subtitle}>Create four groups of four!</Text>
@@ -139,7 +163,10 @@ export default function GameScreen({ navigation, route }) {
                   word={word}
                   selected={selected.includes(word)}
                   onPress={() => toggleSelect(word)}
-                  disabled={!!gameOver}
+                  disabled={!!gameOver || !!flippingGroup}
+                  flipping={!!flippingGroup?.words.includes(word)}
+                  flipDelay={flippingGroup ? flippingGroup.words.indexOf(word) * 120 : 0}
+                  flipColor={flippingGroup?.color}
                 />
               ))}
             </View>
@@ -147,9 +174,9 @@ export default function GameScreen({ navigation, route }) {
         </Animated.View>
 
         {!!message && (
-          <View style={styles.messageBubble}>
+          <Animated.View style={[styles.messageBubble, { opacity: messageOpacity }]}>
             <Text style={styles.messageText}>{message}</Text>
-          </View>
+          </Animated.View>
         )}
 
         <MistakeTracker mistakes={mistakes} />

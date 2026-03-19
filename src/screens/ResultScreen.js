@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,20 +6,43 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
 import { GROUPS } from "../data/puzzle";
+import ConfettiOverlay from "../components/ConfettiOverlay";
 
 export default function ResultScreen({ navigation, route }) {
   const { playerName, mistakes, elapsed, won, groups } = route.params;
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(true);
+  const [displayScore, setDisplayScore] = useState(0);
 
   const score = calculateScore(won, mistakes, elapsed);
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
   useEffect(() => {
     saveScore();
+
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, speed: 14, bounciness: 5, useNativeDriver: true }),
+    ]).start();
+
+    if (won && score > 0) {
+      let start = null;
+      const duration = 1000;
+      const step = (timestamp) => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        setDisplayScore(Math.floor(progress * score));
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
   }, []);
 
   async function saveScore() {
@@ -48,14 +71,20 @@ export default function ResultScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
+      <ConfettiOverlay won={won} />
+      <Animated.View
+        style={[
+          styles.container,
+          { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+        ]}
+      >
         <Text style={styles.emoji}>{won ? "🎉" : "😬"}</Text>
         <Text style={styles.headline}>{won ? "You got it!" : "Better luck next time!"}</Text>
 
         <View style={styles.statsRow}>
           <Stat label="Time" value={formatTime(elapsed)} />
           <Stat label="Mistakes" value={mistakes} />
-          <Stat label="Score" value={score} />
+          <Stat label="Score" value={won ? displayScore : 0} />
         </View>
 
         {!won && (
@@ -91,7 +120,7 @@ export default function ResultScreen({ navigation, route }) {
         >
           <Text style={styles.btnSecondaryText}>Play Again</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

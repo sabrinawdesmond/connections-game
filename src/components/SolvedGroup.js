@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 
 export default function SolvedGroup({ group }) {
-  const slideAnim = useRef(new Animated.Value(-60)).current;
+  const slideAnim = useRef(new Animated.Value(60)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
