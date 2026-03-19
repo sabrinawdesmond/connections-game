@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: "#555",
+    color: "#AAA",
     marginBottom: 6,
   },
   dots: {
@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: "#5A594E",
+    backgroundColor: "#F9F9F3",
   },
   dotUsed: {
-    backgroundColor: "#D3D3C7",
+    backgroundColor: "#444",
   },
 });

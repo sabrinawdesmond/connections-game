@@ -39,14 +39,14 @@ const styles = StyleSheet.create({
   tile: {
     flex: 1,
     aspectRatio: 1,
-    backgroundColor: "#EFEFE6",
+    backgroundColor: "#2A2A2A",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     padding: 6,
   },
   selected: {
-    backgroundColor: "#5A594E",
+    backgroundColor: "#F9F9F3",
   },
   disabled: {
     opacity: 0.5,
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     textAlign: "center",
-    color: "#1A1A1A",
+    color: "#F9F9F3",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
   selectedWord: {
-    color: "#FFFFFF",
+    color: "#121212",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   Animated,
   ScrollView,
   SafeAreaView,
-  Alert,
 } from "react-native";
 import { GROUPS, WORD_MAP, getShuffledWords, PUZZLE_TITLE } from "../data/puzzle";
 import Tile from "../components/Tile";
@@ -23,16 +22,15 @@ export default function GameScreen({ navigation, route }) {
   const [selected, setSelected] = useState([]);
   const [solvedGroups, setSolvedGroups] = useState([]);
   const [mistakes, setMistakes] = useState(0);
-  const [gameOver, setGameOver] = useState(false); // 'won' | 'lost' | false
+  const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState("");
 
   const shakeAnim = useRef(new Animated.Value(0)).current;
   const startTime = useRef(Date.now());
 
-  // Show a temporary message
-  function flashMessage(msg) {
+  function flashMessage(msg, duration = 2000) {
     setMessage(msg);
-    setTimeout(() => setMessage(""), 2000);
+    setTimeout(() => setMessage(""), duration);
   }
 
   function shake() {
@@ -88,7 +86,6 @@ export default function GameScreen({ navigation, route }) {
         });
       }
     } else {
-      // Check if "one away"
       const counts = {};
       groupIds.forEach((id) => { counts[id] = (counts[id] || 0) + 1; });
       const isOneAway = Object.values(counts).some((v) => v === 3);
@@ -99,7 +96,7 @@ export default function GameScreen({ navigation, route }) {
       setSelected([]);
 
       if (isOneAway) {
-        flashMessage("One away...");
+        flashMessage("One away!", 3000);
       } else {
         flashMessage("Not quite!");
       }
@@ -129,12 +126,10 @@ export default function GameScreen({ navigation, route }) {
         <Text style={styles.title}>{PUZZLE_TITLE}</Text>
         <Text style={styles.subtitle}>Create four groups of four!</Text>
 
-        {/* Solved groups slide in at the top */}
         {solvedGroups.map((g) => (
           <SolvedGroup key={g.id} group={g} />
         ))}
 
-        {/* Board */}
         <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
           {rows.map((row, ri) => (
             <View key={ri} style={styles.row}>
@@ -151,7 +146,6 @@ export default function GameScreen({ navigation, route }) {
           ))}
         </Animated.View>
 
-        {/* Flash message */}
         {!!message && (
           <View style={styles.messageBubble}>
             <Text style={styles.messageText}>{message}</Text>
@@ -160,7 +154,6 @@ export default function GameScreen({ navigation, route }) {
 
         <MistakeTracker mistakes={mistakes} />
 
-        {/* Action buttons */}
         <View style={styles.actions}>
           <TouchableOpacity style={styles.btnSecondary} onPress={handleShuffle}>
             <Text style={styles.btnSecondaryText}>Shuffle</Text>
@@ -193,19 +186,19 @@ export default function GameScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F9F9F3" },
+  safe: { flex: 1, backgroundColor: "#121212" },
   container: { padding: 16, alignItems: "stretch" },
   title: {
     fontSize: 24,
     fontWeight: "800",
     textAlign: "center",
     marginBottom: 4,
-    color: "#1A1A1A",
+    color: "#F9F9F3",
   },
   subtitle: {
     fontSize: 13,
     textAlign: "center",
-    color: "#666",
+    color: "#AAA",
     marginBottom: 16,
   },
   row: {
@@ -213,7 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   messageBubble: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: "#F9F9F3",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -221,7 +214,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   messageText: {
-    color: "#FFF",
+    color: "#121212",
     fontWeight: "600",
     fontSize: 14,
   },
@@ -233,38 +226,38 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   btnPrimary: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: "#F9F9F3",
     borderRadius: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
   btnPrimaryText: {
-    color: "#FFF",
+    color: "#121212",
     fontWeight: "700",
     fontSize: 14,
   },
   btnSecondary: {
     borderWidth: 2,
-    borderColor: "#1A1A1A",
+    borderColor: "#F9F9F3",
     borderRadius: 24,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
   btnSecondaryText: {
-    color: "#1A1A1A",
+    color: "#F9F9F3",
     fontWeight: "700",
     fontSize: 14,
   },
   btnDisabled: {
-    backgroundColor: "#AAA",
-    borderColor: "#AAA",
+    backgroundColor: "#444",
+    borderColor: "#444",
   },
   leaderboardLink: {
     marginTop: 20,
     alignSelf: "center",
   },
   leaderboardLinkText: {
-    color: "#555",
+    color: "#AAA",
     textDecorationLine: "underline",
     fontSize: 14,
   },

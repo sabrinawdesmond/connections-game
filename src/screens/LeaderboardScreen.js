@@ -80,7 +80,7 @@ export default function LeaderboardScreen({ navigation }) {
       </View>
 
       {loading ? (
-        <ActivityIndicator style={{ marginTop: 40 }} size="large" />
+        <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#F9F9F3" />
       ) : scores.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyText}>No scores yet. Be the first!</Text>
@@ -107,30 +107,25 @@ export default function LeaderboardScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F9F9F3" },
+  safe: { flex: 1, backgroundColor: "#121212" },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5DC",
+    borderBottomColor: "#333",
   },
-  back: { color: "#555", fontSize: 15 },
-  title: { fontSize: 20, fontWeight: "800", color: "#1A1A1A" },
+  back: { color: "#AAA", fontSize: 15 },
+  title: { fontSize: 20, fontWeight: "800", color: "#F9F9F3" },
   list: { padding: 16 },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: "#1E1E1E",
     borderRadius: 12,
     padding: 14,
     marginBottom: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 2,
   },
   topRow: {
     borderWidth: 2,
@@ -138,9 +133,9 @@ const styles = StyleSheet.create({
   },
   rank: { fontSize: 22, width: 36 },
   info: { flex: 1 },
-  name: { fontSize: 16, fontWeight: "700", color: "#1A1A1A" },
+  name: { fontSize: 16, fontWeight: "700", color: "#F9F9F3" },
   details: { fontSize: 12, color: "#888", marginTop: 2 },
-  score: { fontSize: 20, fontWeight: "800", color: "#1A1A1A" },
+  score: { fontSize: 20, fontWeight: "800", color: "#F9F9F3" },
   empty: { flex: 1, justifyContent: "center", alignItems: "center" },
-  emptyText: { color: "#999", fontSize: 16 },
+  emptyText: { color: "#666", fontSize: 16 },
 });

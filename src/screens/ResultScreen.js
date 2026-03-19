@@ -58,7 +58,6 @@ export default function ResultScreen({ navigation, route }) {
           <Stat label="Score" value={score} />
         </View>
 
-        {/* Show all answers if they lost */}
         {!won && (
           <View style={styles.answersContainer}>
             <Text style={styles.answersTitle}>The answers were:</Text>
@@ -72,7 +71,7 @@ export default function ResultScreen({ navigation, route }) {
         )}
 
         {saving ? (
-          <ActivityIndicator style={{ marginTop: 20 }} />
+          <ActivityIndicator style={{ marginTop: 20 }} color="#F9F9F3" />
         ) : saved ? (
           <Text style={styles.savedText}>Score saved!</Text>
         ) : (
@@ -106,38 +105,37 @@ function Stat({ label, value }) {
   );
 }
 
-// Score = 1000 base, minus 150 per mistake, minus 1 per second (min 0)
 function calculateScore(won, mistakes, elapsed) {
   if (!won) return 0;
   return Math.max(0, 1000 - mistakes * 150 - elapsed);
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F9F9F3" },
+  safe: { flex: 1, backgroundColor: "#121212" },
   container: { flex: 1, padding: 24, alignItems: "center", justifyContent: "center" },
   emoji: { fontSize: 60, marginBottom: 12 },
-  headline: { fontSize: 26, fontWeight: "800", color: "#1A1A1A", marginBottom: 24 },
+  headline: { fontSize: 26, fontWeight: "800", color: "#F9F9F3", marginBottom: 24 },
   statsRow: {
     flexDirection: "row",
     gap: 32,
     marginBottom: 24,
   },
   stat: { alignItems: "center" },
-  statValue: { fontSize: 28, fontWeight: "800", color: "#1A1A1A" },
+  statValue: { fontSize: 28, fontWeight: "800", color: "#F9F9F3" },
   statLabel: { fontSize: 12, color: "#888", marginTop: 2 },
   answersContainer: { width: "100%", marginBottom: 20 },
-  answersTitle: { fontSize: 14, fontWeight: "700", marginBottom: 8, color: "#555" },
+  answersTitle: { fontSize: 14, fontWeight: "700", marginBottom: 8, color: "#AAA" },
   answerRow: {
     borderRadius: 8,
     padding: 12,
     marginBottom: 6,
     alignItems: "center",
   },
-  answerLabel: { fontWeight: "800", fontSize: 13, textTransform: "uppercase", letterSpacing: 1 },
-  answerWords: { fontSize: 12, marginTop: 2 },
-  savedText: { color: "#888", fontSize: 13, marginTop: 12 },
+  answerLabel: { fontWeight: "800", fontSize: 13, textTransform: "uppercase", letterSpacing: 1, color: "#1A1A1A" },
+  answerWords: { fontSize: 12, marginTop: 2, color: "#1A1A1A" },
+  savedText: { color: "#666", fontSize: 13, marginTop: 12 },
   btn: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: "#F9F9F3",
     borderRadius: 24,
     paddingHorizontal: 32,
     paddingVertical: 14,
@@ -145,10 +143,10 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
   },
-  btnText: { color: "#FFF", fontWeight: "700", fontSize: 16 },
+  btnText: { color: "#121212", fontWeight: "700", fontSize: 16 },
   btnSecondary: {
     borderWidth: 2,
-    borderColor: "#1A1A1A",
+    borderColor: "#F9F9F3",
     borderRadius: 24,
     paddingHorizontal: 32,
     paddingVertical: 14,
@@ -156,5 +154,5 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
   },
-  btnSecondaryText: { color: "#1A1A1A", fontWeight: "700", fontSize: 16 },
+  btnSecondaryText: { color: "#F9F9F3", fontWeight: "700", fontSize: 16 },
 });

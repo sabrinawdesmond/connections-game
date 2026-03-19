@@ -5,7 +5,7 @@
 //         '#B0C4EF' (blue),   '#BA81C5' (purple)
 // ─────────────────────────────────────────────
 
-export const PUZZLE_TITLE = "My Connections";
+export const PUZZLE_TITLE = "Gaby's Connections";
 
 export const GROUPS = [
   {
