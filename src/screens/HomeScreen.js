@@ -32,7 +32,7 @@ export default function HomeScreen({ navigation }) {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <Text style={styles.bigEmoji}>👰🏽‍♀️💍</Text>
+        <Text style={styles.bigEmoji}>👰🏻‍♀️💍</Text>
         <Text style={styles.title}>{PUZZLE_TITLE}</Text>
         <Text style={styles.subtitle}>
           Group the 16 words into four categories.{"\n"}You have 4 mistakes before it's game over.

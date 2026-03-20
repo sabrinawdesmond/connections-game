@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Animated,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { GROUPS, WORD_MAP, getShuffledWords, PUZZLE_TITLE } from "../data/puzzle";
@@ -24,6 +25,7 @@ export default function GameScreen({ navigation, route }) {
   const [selected, setSelected] = useState([]);
   const [solvedGroups, setSolvedGroups] = useState([]);
   const [mistakes, setMistakes] = useState(0);
+  const [previousGuesses, setPreviousGuesses] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState("");
   const [flippingGroup, setFlippingGroup] = useState(null);
@@ -33,6 +35,23 @@ export default function GameScreen({ navigation, route }) {
   const messageOpacity = useRef(new Animated.Value(0)).current;
   const startTime = useRef(Date.now());
   const messageAnimation = useRef(null);
+
+  // Back button guard — prompt before leaving mid-game
+  useEffect(() => {
+    if (gameOver) return;
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault();
+      Alert.alert(
+        "Leave game?",
+        "Your progress will be lost.",
+        [
+          { text: "Stay", style: "cancel" },
+          { text: "Leave", style: "destructive", onPress: () => navigation.dispatch(e.data.action) },
+        ]
+      );
+    });
+    return unsubscribe;
+  }, [navigation, gameOver]);
 
   function flashMessage(msg, duration = 2000) {
     if (messageAnimation.current) messageAnimation.current.stop();
@@ -78,19 +97,27 @@ export default function GameScreen({ navigation, route }) {
   function handleSubmit() {
     if (selected.length !== 4) return;
 
+    const sortedGuess = [...selected].sort().join(",");
+    if (previousGuesses.includes(sortedGuess)) {
+      flashMessage("Already guessed!");
+      return;
+    }
+
     const groupIds = selected.map((w) => WORD_MAP[w]);
     const allSame = groupIds.every((id) => id === groupIds[0]);
+
+    setPreviousGuesses((prev) => [...prev, sortedGuess]);
 
     if (allSame) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       const solvedGroup = GROUPS.find((g) => g.id === groupIds[0]);
       setFlippingGroup({ words: [...selected], color: solvedGroup.color });
+      setSelected([]);
 
       setTimeout(() => {
         const newSolvedGroups = [...solvedGroups, solvedGroup];
         setSolvedGroups(newSolvedGroups);
         setWords((prev) => prev.filter((w) => !selected.includes(w)));
-        setSelected([]);
         setFlippingGroup(null);
 
         if (newSolvedGroups.length === GROUPS.length) {
@@ -103,6 +130,7 @@ export default function GameScreen({ navigation, route }) {
               mistakes,
               elapsed,
               won: true,
+              solvedGroups: newSolvedGroups,
             });
           }, 400);
         }

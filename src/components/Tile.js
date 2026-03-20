@@ -52,7 +52,7 @@ export default function Tile({ word, selected, onPress, disabled, flipping, flip
         disabled={disabled}
         activeOpacity={0.8}
       >
-        <Text style={[styles.word, { color: textColor }]} numberOfLines={1} adjustsFontSizeToFit>
+        <Text style={[styles.word, { color: textColor, fontSize: word.length > 10 ? 10 : 13 }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.4}>
           {word}
         </Text>
       </TouchableOpacity>

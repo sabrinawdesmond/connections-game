@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="c" width="64" height="64"></canvas>
+<br>
+<a id="dl" download="favicon.png">Download favicon.png</a>
+<script>
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  ctx.font = '52px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('👰🏻‍♀️', 32, 36);
+  document.getElementById('dl').href = canvas.toDataURL('image/png');
+  document.getElementById('dl').click();
+</script>
+</body>
+</html>
