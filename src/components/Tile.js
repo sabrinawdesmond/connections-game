@@ -26,13 +26,13 @@ export default function Tile({ word, selected, onPress, disabled, flipping, flip
     const timeout = setTimeout(() => {
       Animated.timing(flipScaleX, {
         toValue: 0,
-        duration: 180,
+        duration: 280,
         useNativeDriver: true,
       }).start(() => {
         setShowFlipColor(true);
         Animated.timing(flipScaleX, {
           toValue: 1,
-          duration: 180,
+          duration: 280,
           useNativeDriver: true,
         }).start();
       });
@@ -52,9 +52,16 @@ export default function Tile({ word, selected, onPress, disabled, flipping, flip
         disabled={disabled}
         activeOpacity={0.8}
       >
-        <Text style={[styles.word, { color: textColor, fontSize: word.length > 10 ? 10 : 13 }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.4}>
-          {word}
-        </Text>
+        {word.includes(" ")
+          ? word.split(" ").map((w, i) => (
+              <Text key={i} style={[styles.word, { color: textColor, fontSize: w.length > 10 ? 8.5 : 13 }]}>
+                {w}
+              </Text>
+            ))
+          : <Text style={[styles.word, { color: textColor, fontSize: word.length > 10 ? 8.5 : 13 }]}>
+              {word}
+            </Text>
+        }
       </TouchableOpacity>
     </Animated.View>
   );

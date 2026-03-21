@@ -193,7 +193,7 @@ export default function GameScreen({ navigation, route }) {
                   onPress={() => toggleSelect(word)}
                   disabled={!!gameOver || !!flippingGroup}
                   flipping={!!flippingGroup?.words.includes(word)}
-                  flipDelay={flippingGroup ? flippingGroup.words.indexOf(word) * 120 : 0}
+                  flipDelay={flippingGroup ? flippingGroup.words.indexOf(word) * 200 : 0}
                   flipColor={flippingGroup?.color}
                 />
               ))}
