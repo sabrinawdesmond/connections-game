@@ -12,11 +12,16 @@ import {
 import {
   collection,
   query,
+  where,
   orderBy,
   limit,
   getDocs,
 } from "firebase/firestore";
 import { db } from "../../firebase";
+import { PUZZLE_ID, THEME } from "../data/puzzle";
+import { getThemeColor } from "../data/themes";
+
+const TOP_ROW_COLOR = getThemeColor(THEME, "Straightforward");
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -33,6 +38,7 @@ export default function LeaderboardScreen({ navigation }) {
     try {
       const q = query(
         collection(db, "scores"),
+        where("puzzleId", "==", PUZZLE_ID),
         orderBy("score", "desc"),
         limit(20)
       );
@@ -71,43 +77,51 @@ export default function LeaderboardScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Leaderboard</Text>
-        <View style={{ width: 60 }} />
-      </View>
-
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#F9F9F3" />
-      ) : scores.length === 0 ? (
-        <View style={styles.empty}>
-          <Text style={styles.emptyText}>No scores yet. Be the first!</Text>
+      <View style={styles.page}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={styles.back}>← Back</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>Leaderboard</Text>
+          <View style={{ width: 60 }} />
         </View>
-      ) : (
-        <FlatList
-          data={scores}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                fetchScores();
-              }}
-            />
-          }
-        />
-      )}
+
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#F9F9F3" />
+        ) : scores.length === 0 ? (
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>No scores yet. Be the first!</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={scores}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.list}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => {
+                  setRefreshing(true);
+                  fetchScores();
+                }}
+              />
+            }
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#121212" },
+  page: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 500,
+    alignSelf: "center",
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -129,7 +143,7 @@ const styles = StyleSheet.create({
   },
   topRow: {
     borderWidth: 2,
-    borderColor: "#F9DF6D",
+    borderColor: TOP_ROW_COLOR,
   },
   rank: { fontSize: 22, width: 36 },
   info: { flex: 1 },

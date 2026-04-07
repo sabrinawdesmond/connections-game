@@ -1,39 +1,52 @@
-// ─────────────────────────────────────────────
-// PUZZLE DATA — swap in your own content here!
-// Each group needs: id, label, color, and 4 words
-// Colors: '#F9DF6D' (yellow), '#A0C35A' (green),
-//         '#B0C4EF' (blue),   '#BA81C5' (purple)
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
+// PUZZLE DATA — swap this file for each customer order.
+//
+// Required changes per order:
+//   PUZZLE_TITLE  — displayed at the top of the game
+//   PUZZLE_ID     — unique slug used to isolate this puzzle's
+//                   leaderboard scores in Firestore (no spaces,
+//                   lowercase, hyphens OK, e.g. "sarahs-connections")
+//   THEME         — color palette name (see themes.js for options):
+//                   Default · Blush · Sage · Midnight ·
+//                   Citrus · Ocean · Berry · Champagne
+//   GROUPS        — four groups, each with id, label, difficulty,
+//                   and exactly 4 words. Difficulty must be one of:
+//                   "Straightforward" · "Medium" · "Tricky" · "Devious"
+// ─────────────────────────────────────────────────────────────────
+
+import { getThemeColor } from "./themes";
 
 export const PUZZLE_TITLE = "Gaby's Connections";
+export const PUZZLE_ID    = "gabys-connections"; // unique per customer — change this!
+export const THEME        = "Default";           // theme name from themes.js
 
 export const GROUPS = [
   {
     id: 1,
     label: "How Gaby likes her martini",
-    color: "#F9DF6D",
     difficulty: "Straightforward",
+    color: getThemeColor(THEME, "Straightforward"),
     words: ["DIRTY", "FILTHY", "OLIVE", "STRONG"],
   },
   {
     id: 2,
     label: "Words to describe Maynard",
-    color: "#BA81C5",
     difficulty: "Devious",
+    color: getThemeColor(THEME, "Devious"),
     words: ["KOREAN", "BULGOGI", "MEAT", "DOG"],
   },
   {
     id: 3,
     label: "Gaby's favorite TV shows",
-    color: "#B0C4EF",
     difficulty: "Tricky",
+    color: getThemeColor(THEME, "Tricky"),
     words: ["SUPERNATURAL", "HAPPY ENDINGS", "CHOPPED", "FRIENDS"],
   },
   {
     id: 4,
     label: "Gaby's favorite foods",
-    color: "#A0C35A",
     difficulty: "Medium",
+    color: getThemeColor(THEME, "Medium"),
     words: ["BREAD", "CHEESE", "KIMCHI", "GRAPES"],
   },
 ];

@@ -175,66 +175,68 @@ export default function GameScreen({ navigation, route }) {
     <SafeAreaView style={styles.safe}>
       {showWinConfetti && <ConfettiOverlay won={true} />}
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>{PUZZLE_TITLE}</Text>
-        <Text style={styles.subtitle}>Create four groups of four!</Text>
+        <View style={styles.inner}>
+          <Text style={styles.title}>{PUZZLE_TITLE}</Text>
+          <Text style={styles.subtitle}>Create four groups of four!</Text>
 
-        {solvedGroups.map((g) => (
-          <SolvedGroup key={g.id} group={g} />
-        ))}
-
-        <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
-          {rows.map((row, ri) => (
-            <View key={ri} style={styles.row}>
-              {row.map((word) => (
-                <Tile
-                  key={word}
-                  word={word}
-                  selected={selected.includes(word)}
-                  onPress={() => toggleSelect(word)}
-                  disabled={!!gameOver || !!flippingGroup}
-                  flipping={!!flippingGroup?.words.includes(word)}
-                  flipDelay={flippingGroup ? flippingGroup.words.indexOf(word) * 200 : 0}
-                  flipColor={flippingGroup?.color}
-                />
-              ))}
-            </View>
+          {solvedGroups.map((g) => (
+            <SolvedGroup key={g.id} group={g} />
           ))}
-        </Animated.View>
 
-        {!!message && (
-          <Animated.View style={[styles.messageBubble, { opacity: messageOpacity }]}>
-            <Text style={styles.messageText}>{message}</Text>
+          <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
+            {rows.map((row, ri) => (
+              <View key={ri} style={styles.row}>
+                {row.map((word) => (
+                  <Tile
+                    key={word}
+                    word={word}
+                    selected={selected.includes(word)}
+                    onPress={() => toggleSelect(word)}
+                    disabled={!!gameOver || !!flippingGroup}
+                    flipping={!!flippingGroup?.words.includes(word)}
+                    flipDelay={flippingGroup ? flippingGroup.words.indexOf(word) * 200 : 0}
+                    flipColor={flippingGroup?.color}
+                  />
+                ))}
+              </View>
+            ))}
           </Animated.View>
-        )}
 
-        <MistakeTracker mistakes={mistakes} />
+          {!!message && (
+            <Animated.View style={[styles.messageBubble, { opacity: messageOpacity }]}>
+              <Text style={styles.messageText}>{message}</Text>
+            </Animated.View>
+          )}
 
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.btnSecondary} onPress={handleShuffle}>
-            <Text style={styles.btnSecondaryText}>Shuffle</Text>
-          </TouchableOpacity>
+          <MistakeTracker mistakes={mistakes} />
+
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.btnSecondary} onPress={handleShuffle}>
+              <Text style={styles.btnSecondaryText}>Shuffle</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnSecondary}
+              onPress={() => setSelected([])}
+              disabled={selected.length === 0}
+            >
+              <Text style={styles.btnSecondaryText}>Deselect All</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btnPrimary, selected.length !== 4 && styles.btnDisabled]}
+              onPress={handleSubmit}
+              disabled={selected.length !== 4}
+            >
+              <Text style={styles.btnPrimaryText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity
-            style={styles.btnSecondary}
-            onPress={() => setSelected([])}
-            disabled={selected.length === 0}
+            style={styles.leaderboardLink}
+            onPress={() => navigation.navigate("Leaderboard")}
           >
-            <Text style={styles.btnSecondaryText}>Deselect All</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.btnPrimary, selected.length !== 4 && styles.btnDisabled]}
-            onPress={handleSubmit}
-            disabled={selected.length !== 4}
-          >
-            <Text style={styles.btnPrimaryText}>Submit</Text>
+            <Text style={styles.leaderboardLinkText}>View Leaderboard</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={styles.leaderboardLink}
-          onPress={() => navigation.navigate("Leaderboard")}
-        >
-          <Text style={styles.leaderboardLinkText}>View Leaderboard</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -242,7 +244,8 @@ export default function GameScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#121212" },
-  container: { padding: 16, alignItems: "stretch" },
+  container: { alignItems: "center", paddingVertical: 16 },
+  inner: { width: "100%", maxWidth: 500, paddingHorizontal: 16 },
   title: {
     fontSize: 24,
     fontWeight: "800",

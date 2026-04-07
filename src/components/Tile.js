@@ -6,6 +6,13 @@ import {
   Animated,
 } from "react-native";
 
+function tileFont(str) {
+  if (str.length > 11) return 9;
+  if (str.length > 8)  return 11;
+  if (str.length > 5)  return 12.5;
+  return 14;
+}
+
 export default function Tile({ word, selected, onPress, disabled, flipping, flipDelay, flipColor }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const flipScaleX = useRef(new Animated.Value(1)).current;
@@ -54,11 +61,11 @@ export default function Tile({ word, selected, onPress, disabled, flipping, flip
       >
         {word.includes(" ")
           ? word.split(" ").map((w, i) => (
-              <Text key={i} style={[styles.word, { color: textColor, fontSize: w.length > 10 ? 8.5 : 13 }]}>
+              <Text key={i} style={[styles.word, { color: textColor, fontSize: tileFont(w) }]}>
                 {w}
               </Text>
             ))
-          : <Text style={[styles.word, { color: textColor, fontSize: word.length > 10 ? 8.5 : 13 }]}>
+          : <Text style={[styles.word, { color: textColor, fontSize: tileFont(word) }]}>
               {word}
             </Text>
         }

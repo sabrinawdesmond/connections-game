@@ -11,15 +11,9 @@ import {
 } from "react-native";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
-import { GROUPS, PUZZLE_TITLE } from "../data/puzzle";
+import { GROUPS, PUZZLE_TITLE, PUZZLE_ID } from "../data/puzzle";
+import { DIFFICULTY_EMOJIS } from "../data/themes";
 import ConfettiOverlay from "../components/ConfettiOverlay";
-
-const COLOR_EMOJI = {
-  "#F9DF6D": "🟨",
-  "#A0C35A": "🟩",
-  "#B0C4EF": "🟦",
-  "#BA81C5": "🟪",
-};
 
 export default function ResultScreen({ navigation, route }) {
   const { playerName, mistakes, elapsed, won, groups, solvedGroups } = route.params;
@@ -57,6 +51,7 @@ export default function ResultScreen({ navigation, route }) {
   async function saveScore() {
     try {
       await addDoc(collection(db, "scores"), {
+        puzzleId: PUZZLE_ID,
         playerName,
         won,
         mistakes,
@@ -82,7 +77,7 @@ export default function ResultScreen({ navigation, route }) {
     const lines = [PUZZLE_TITLE];
     if (won && solvedGroups?.length) {
       solvedGroups.forEach((g) => {
-        lines.push((COLOR_EMOJI[g.color] ?? "⬜").repeat(4));
+        lines.push((DIFFICULTY_EMOJIS[g.difficulty] ?? "⬜").repeat(4));
       });
     }
     lines.push(`Mistakes: ${mistakes} | Time: ${formatTime(elapsed)}`);
@@ -177,7 +172,15 @@ function calculateScore(won, mistakes, elapsed) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#121212" },
-  container: { flex: 1, padding: 24, alignItems: "center", justifyContent: "center" },
+  container: {
+    flex: 1,
+    padding: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+  },
   emoji: { fontSize: 60, marginBottom: 12 },
   headline: { fontSize: 26, fontWeight: "800", color: "#F9F9F3", marginBottom: 24 },
   statsRow: {
@@ -209,6 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 20,
     width: "80%",
+    maxWidth: 360,
     alignItems: "center",
   },
   btnShareText: { color: "#A0C35A", fontWeight: "700", fontSize: 16 },
@@ -219,6 +223,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 12,
     width: "80%",
+    maxWidth: 360,
     alignItems: "center",
   },
   btnText: { color: "#121212", fontWeight: "700", fontSize: 16 },
@@ -230,6 +235,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 12,
     width: "80%",
+    maxWidth: 360,
     alignItems: "center",
   },
   btnSecondaryText: { color: "#F9F9F3", fontWeight: "700", fontSize: 16 },
