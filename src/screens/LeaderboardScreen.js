@@ -97,6 +97,7 @@ export default function LeaderboardScreen({ navigation }) {
             data={scores}
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
+            style={styles.listContainer}
             contentContainerStyle={styles.list}
             refreshControl={
               <RefreshControl
@@ -132,6 +133,7 @@ const styles = StyleSheet.create({
   },
   back: { color: "#AAA", fontSize: 15 },
   title: { fontSize: 20, fontWeight: "800", color: "#F9F9F3" },
+  listContainer: { flex: 1 },
   list: { padding: 16 },
   row: {
     flexDirection: "row",
