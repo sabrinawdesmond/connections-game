@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 500,
     alignSelf: "center",
+    overflow: "hidden",
   },
   header: {
     flexDirection: "row",
